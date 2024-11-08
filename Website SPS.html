@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Saúde</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f9;
+            display: flex;
+        }
+
+        /* Estilo do menu lateral fixo */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background-color: blue;
+            color: black;
+            width: 200px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(-100%); /* Menu começa oculto */
+        }
+
+        .sidebar.open {
+            transform: translateX(0); /* Menu visível */
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #0056b3;
+            border-radius: 4px;
+        }
+
+        /* Estilo para o ícone do menu hamburguer */
+        .menu-icon {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            margin: 20px;
+        }
+
+        .menu-icon div {
+            height: 4px;
+            background-color: #333;
+            border-radius: 2px;
+        }
+
+        /* Estilo para o ícone de fechar (X) */
+        .close-icon {
+            font-size: 30px;
+            cursor: pointer;
+            color: white;
+            align-self: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            margin: 200px auto;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin-left: 450px; /* Espaço para o menu lateral */
+        }
+
+        input[type="text"], input[type="password"], input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* Estilo da lista de consultas */
+        .consulta-lista, .especialista-lista {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .consulta-item, .especialista-item {
+            background-color: #e9ecef;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ícone do menu hamburguer -->
+    <div class="menu-icon" onclick="toggleMenu()">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- Menu de navegação lateral fixo -->
+    <div class="sidebar" id="sidebar">
+        <!-- Ícone de fechar o menu (X) -->
+        <span class="close-icon" onclick="toggleMenu()">×</span>
+
+        <img src="https://www.curitiba.pr.leg.br/atividade-parlamentar/comissoes-permanentes/logos-das-comissoes/saude.png/image" alt="Descrição da imagem">
+
+        <p><strong>Nome:</strong> <span id="username-display">Usuário</span></p>
+        <p><strong>Email:</strong> <span id="email-display">usuario@exemplo.com</span></p>
+        <a href="#" onclick="showPage('home')">Página Inicial</a>
+        <a href="#" onclick="showPage('especialistas')">Especialistas</a>
+        <a href="#" onclick="showPage('consultas')">Consultas</a>
+        <a href="#" onclick="showPage('avaliacoes')">Avaliações</a>
+        <a href="#" onclick="showPage('resultados')">Resultados</a>
+    </div>
+
+    <div class="container">
+        <div id="home" class="page active">
+            <h1>Sistema de Saúde</h1>
+            <p>Bem-vindo ao sistema de saúde online!</p>
+            <button onclick="showPage('login')">Entrar</button>
+            <button onclick="showPage('cadastro')">Cadastrar</button>
+        </div>
+
+        <div id="login" class="page">
+            <h2>Login</h2>
+            <form onsubmit="return login(event)">
+                <input type="text" id="login-username" placeholder="Nome de usuário" required>
+                <input type="password" id="login-password" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+            <p>Não tem uma conta? <a href="#" onclick="showPage('cadastro')">Cadastre-se</a></p>
+        </div>
+
+        <div id="cadastro" class="page">
+            <h2>Cadastro</h2>
+            <form onsubmit="return cadastrar(event)">
+                <input type="text" id="cadastro-username" placeholder="Nome de usuário" required>
+                <input type="email" id="cadastro-email" placeholder="Email" required>
+                <input type="password" id="cadastro-password" placeholder="Senha" required>
+                <button type="submit">Cadastrar</button>
+            </form>
+            <p>Já tem uma conta? <a href="#" onclick="showPage('login')">Entrar</a></p>
+        </div>
+
+        <div id="sistema" class="page">
+            <h2>Bom Vindo ao Painel do Sistema de Saúde</h2>
+            <button onclick="showPage('home')">Sair</button>
+        </div>
+
+        <div id="especialistas" class="page">
+            <h2>Especialistas</h2>
+            <p>Informações sobre especialistas disponíveis.</p>
+            
+            <!-- Lista de especialistas -->
+            <div class="especialista-lista">
+                <div class="especialista-item">
+                    <strong>Nome:</strong> Dr. João Silva<br>
+                    <strong>Especialidade:</strong> Cardiologista<br>
+                    <strong>Contato:</strong> (51) 0000-0000
+                </div>
+                <div class="especialista-item">
+                    <strong>Nome:</strong> Dra. Maria Oliveira<br>
+                    <strong>Especialidade:</strong> Dermatologista<br>
+                    <strong>Contato:</strong> (51) 1111-1111
+                </div>
+                <div class="especialista-item">
+                    <strong>Nome:</strong> Dr. Carlos Eduardo<br>
+                    <strong>Especialidade:</strong> Ortopedista<br>
+                    <strong>Contato:</strong> (51) 2222-2222
+                </div>
+                <div class="especialista-item">
+                    <strong>Nome:</strong> Dra. Fernanda Costa<br>
+                    <strong>Especialidade:</strong> Ginecologista<br>
+                    <strong>Contato:</strong> (51) 3333-3333
+                </div>
+                <div class="especialista-item">
+                    <strong>Nome:</strong> Dr. Thiago Borges<br>
+                    <strong>Especialidade:</strong> Clínico Geral<br>
+                    <strong>Contato:</strong> (51) 4444-4444
+                </div>
+            </div>
+        </div>
+
+       <div id="consultas" class="page">
+    <h2>Consultas</h2>
+    
+    <!-- Formulário para agendar uma consulta -->
+    <h3>Agendar Consulta</h3>
+    <form id="form-agendamento" onsubmit="return agendarConsulta(event)">
+        <label for="especialista">Especialista:</label>
+        <select id="especialista" required>
+            <option value="" disabled selected>Selecione um especialista</option>
+            <option value="Dr. João Silva">Dr. João Silva - Cardiologista</option>
+            <option value="Dra. Maria Oliveira">Dra. Maria Oliveira - Dermatologista</option>
+            <option value="Dr. Carlos Eduardo">Dr. Carlos Eduardo - Ortopedista</option>
+            <option value="Dra. Fernanda Costa">Dra. Fernanda Costa - Ginecologista</option>
+            <option value="Dr. Thiago Borges">Dr. Thiago Borges - Clínico Geral</option>
+        </select>
+
+        <label for="data-consulta">Data da Consulta:</label>
+        <input type="date" id="data-consulta" required>
+
+        <label for="hora-consulta">Hora da Consulta:</label>
+        <input type="time" id="hora-consulta" required>
+
+        <input type="text" id="sintomas-consulta" placeholder="Descreva seus sintomas:" required>
+
+        <button type="submit">Agendar Consulta</button>
+    </form>
+
+    <!-- Lista de consultas agendadas -->
+    <div class="consulta-lista">
+        <div class="consulta-item">
+            <h2>Consultas realizadas</h2>
+            <strong>Data:</strong> 10/11/2024<br>
+            <strong>Hora:</strong> 14:00<br>
+            <strong>Especialista:</strong> Dr. João Silva<br>
+        
+        </div>
+        <div class="consulta-item">
+            <strong>Data:</strong> 12/11/2024<br>
+            <strong>Hora:</strong> 09:30<br>
+            <strong>Especialista:</strong> Dra. Maria Oliveira<br>
+            
+        </div>
+        
+    </div>
+</div>
+
+
+        <div id="avaliacoes" class="page">
+    <h2>Avaliações</h2>
+    <p>Veja ou faça avaliações.</p>
+
+    <!-- Formulário de avaliação -->
+    <form id="form-avaliacao" onsubmit="return enviarAvaliacao(event)">
+        <label for="consulta-selecionada">Selecione a consulta:</label>
+        <select id="consulta-selecionada" required>
+            <option value="" disabled selected>Selecione uma consulta</option>
+            <option value="consulta1">Consulta com Dr. João Silva - 10/11/2024</option>
+            <option value="consulta2">Consulta com Dra. Maria Oliveira - 12/11/2024</option>
+        
+        </select>
+
+        <label for="avaliacao">Avaliação:</label>
+        <select id="avaliacao" required>
+            <option value="" disabled selected>Selecione uma nota</option>
+            <option value="5">5 - Excelente</option>
+            <option value="4">4 - Muito Bom</option>
+            <option value="3">3 - Bom</option>
+            <option value="2">2 - Regular</option>
+            <option value="1">1 - Ruim</option>
+        </select>
+
+        <label for="comentarios">Comentários:</label>
+        <textarea id="comentarios" rows="4" placeholder="Deixe seus comentários sobre a consulta"></textarea>
+
+        <button type="submit">Enviar Avaliação</button>
+    </form>
+
+    <!-- Lista de avaliações -->
+    <div id="lista-avaliacoes">
+        <h3>Avaliações Recebidas</h3>
+        <!-- As avaliações enviadas serão exibidas aqui -->
+    </div>
+</div>
+
+     <div id="resultados" class="page">
+    <h2>Resultados</h2>
+
+    <!-- Formulário para inserção de sintomas -->
+    <form id="form-resultados" onsubmit="return calcularProbabilidade(event)">
+
+        <label for="sintomas">Descreva seus sintomas:</label>
+        <textarea id="sintomas" rows="4" placeholder="Ex: dor no peito, cansaço, febre..." required></textarea>
+
+        <button type="submit">Calcular Probabilidade</button>
+    </form>
+
+    <!-- Exibir o resultado da probabilidade -->
+    <div id="resultado-doenca" style="display: none;">
+        <h3>Resultado do Diagnóstico</h3>
+        <p><strong>Doença Possível:</strong> <span id="doenca-diagnostico">Nenhuma</span></p>
+        <p><strong>Probabilidade de Diagnóstico:</strong> <span id="probabilidade">0%</span></p>
+    </div>
+
+        <!-- Os resultados dos exames adicionados serão exibidos aqui -->
+    </div>
+</div>
+
+<script>
+    // Função para alternar entre as páginas
+    function showPage(pageId) {
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(page => page.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+    }
+
+    // Função para calcular a probabilidade de doença com base nos sintomas
+    function calcularProbabilidade(event) {
+        event.preventDefault(); // Impede o envio do formulário
+
+        // Obtendo os sintomas inseridos
+        const sintomas = document.getElementById('sintomas').value.toLowerCase();
+
+        // Inicializar variáveis para a doença e probabilidade
+        let doenca = "Nenhuma";
+        let probabilidade = 0;
+
+        // Exemplo de regras para diagnóstico
+        if (sintomas.includes("dor no peito") && sintomas.includes("cansaço")) {
+            doenca = "Infarto";
+            probabilidade = 85; // Probabilidade fictícia
+        } else if (sintomas.includes("febre") && sintomas.includes("tosse")) {
+            doenca = "Gripe";
+            probabilidade = 70;
+        } else if (sintomas.includes("dor nas articulações") && sintomas.includes("febre")) {
+            doenca = "Artrite";
+            probabilidade = 60;
+        } else if (sintomas.includes("dor de cabeça") && sintomas.includes("náusea")) {
+            doenca = "Enxaqueca";
+            probabilidade = 75;
+        } else {
+            doenca = "Indefinido";
+            probabilidade = 10; // Baixa chance de diagnóstico claro
+        }
+
+        // Exibir o resultado do diagnóstico
+        document.getElementById('doenca-diagnostico').innerText = doenca;
+        document.getElementById('probabilidade').innerText = `${probabilidade}%`;
+
+        // Mostrar o resultado
+        document.getElementById('resultado-doenca').style.display = 'block';
+    }
+</script>
+
+    <script>
+        // Função para alternar entre as páginas
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+       // Função de login (simulação)
+function login(event) {
+    event.preventDefault();
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+
+    // Dados de login fictícios
+    const validUsername = 'admin';  // Novo nome de usuário
+    const validPassword = '12345678'; // Nova senha
+
+    // Verificar se o usuário e senha estão corretos
+    if (username === validUsername && password === validPassword) {
+        document.getElementById('username-display').innerText = username;
+        showPage('sistema');
+        toggleMenu(); // Abrir o menu lateral após o login
+    } else {
+        alert("Nome de usuário ou senha inválidos.");
+    }
+}
+
+        // Função de cadastro (simulação)
+        function cadastrar(event) {
+            event.preventDefault();
+            const username = document.getElementById('cadastro-username').value;
+            const email = document.getElementById('cadastro-email').value;
+            const password = document.getElementById('cadastro-password').value;
+
+            if (username && email && password) {
+                document.getElementById('username-display').innerText = username;
+                document.getElementById('email-display').innerText = email;
+                alert("Cadastro realizado com sucesso!");
+                showPage('login');
+            } else {
+                alert("Por favor, preencha todos os campos.");
+            }
+        }
+
+        // Função para alternar o estado do menu lateral (abrir/fechar)
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+    </script>
+
+</body>
+</html>
